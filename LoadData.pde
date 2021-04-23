@@ -6,6 +6,8 @@ int tableSize;
 
 String loadingMessage = "Connecting to database";
 String dots = ".";
+int fakeLoadingTime = 2;
+int loadingProgress;
 
 int mouseInfoIndex;
 String mouseInfoText;
@@ -35,10 +37,17 @@ void drawLoading() {
   textSize(50);
   text(loadingMessage + dots, width/2 + dots.length() * 8, height/2);
   
-  delay(200);
+  delay(500);
   dots += '.';
   if(dots.length() >= 4)
     dots = "";
+  
+  stroke(255);
+  fill(0);
+  rect(width * 1f/3f, height * 3f/5f, width * 1f/3f, height * 1f/10f);
+  fill(255);
+  rect(width * 1f/3f, height * 3f/5f, width * (loadingProgress / 100f)/3f, height * 1f/10f);
+
 }
 
 void drawDiagram() {
@@ -49,6 +58,9 @@ void drawDiagram() {
   textSize(width / 100);
   
   for(int i = 0; i < tableSize; i++) {
+    
+    colorMode(HSB);
+    fill((float)i / tableSize * 255, 255, 255);
     
     pushMatrix();
       translate(i * (width / 52), height - areas.get(i) / 750f * (height / 1000f));
@@ -81,7 +93,6 @@ void drawMouseInfo() {
   
   fill(255);
   text(mouseInfoText, mouseX, mouseY);
-
 }
 
 void setupArrays() {
@@ -103,11 +114,12 @@ void setupArrays() {
         tempHighRow = j;
       
       //Bare falsk loading tid.
-      delay(round(random(50)));
+      delay(round(random(fakeLoadingTime)));
       
       progress++;
+      loadingProgress = round(progress / 13.78);
       
-      loadingMessage = "Sorting data table: " + round(progress / 13.78) + "%";
+      loadingMessage = "Sorting data table: " + loadingProgress + "%";
     }
     
     states.append(table.getString(tempHighRow, "state"));
@@ -115,6 +127,6 @@ void setupArrays() {
     
     table.removeRow(tempHighRow);
   } //<>//
-
+    
   loadingMessage = "Done";
 }
